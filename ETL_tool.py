@@ -20,7 +20,7 @@ class ETLprocessor:
                 # 動態調用對應的資料處理方法
                 data_processor = getattr(self, data_processor_name, None)
                 if callable(data_processor):
-                    data_processor(api_url, map_columns, store_path)
+                    data_processor(api_name, api_url, map_columns, store_path)
                 else:
                     print(f"Invalid data processor for API: {api_name}")
             else:
