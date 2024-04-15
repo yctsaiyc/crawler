@@ -56,8 +56,8 @@
         "備註": "肥育乳公牛550公斤以上"
     },
     "API9": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/SheepTransData.aspx",
-        "path": "./data/product_data/data/sheep_trans/",
+        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/SheepTransData.aspx?$filter=transDate+like+",
+        "path": "./data/product_data/data/sheep_trans_data/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "市場羊隻日行情資料"
