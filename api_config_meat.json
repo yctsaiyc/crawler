@@ -42,7 +42,7 @@
         "備註": "白肉雞/雞蛋"
     },
     "API7": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/BeefPriceService.aspx",
+        "url": "https://data.moa.gov.tw/Service/OpenData/BeefPriceService.aspx?$filter=date+like+",
         "path": "./data/product_data/data/beef_price_service/",
         "columns": [],
         "data_processor": "process_data_api",

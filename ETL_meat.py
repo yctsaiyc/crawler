@@ -14,7 +14,7 @@ class ExchangeFetcher(ETLprocessorLive):
         self.dic_latest_data_date = {}
         for api_name in self.config:
             # self.dic_latest_data_date[api_name] = None
-            self.dic_latest_data_date[api_name] = date(2024, 4, 13) # date(2010, 1, 1)
+            self.dic_latest_data_date[api_name] = date(2024, 3, 25) # date(2010, 1, 1)
 
     def process_api(self, api_name):
         return super().process_api(api_name)
@@ -24,14 +24,6 @@ class ExchangeFetcher(ETLprocessorLive):
             r = requests.get(api_url)
             content = json.loads(r.text)
             df = pd.DataFrame(content)
-            df["交易日期"] = df["交易日期"].apply(self.roc_to_ad)
-            ## current_date = datetime.now().date()
-            # date_list = ['日期' , 'date' , 'transDate']
-            # if '交易日期' in df.columns:
-            #    df['交易日期'] = df['交易日期'].apply(self.roc_to_ad)
-            # for date in date_list:
-            #    if date in df.columns:
-            #        df[date] = df[date].apply(self.format_ad)
             return df
 
         except Exception as e:
@@ -53,55 +45,83 @@ class ExchangeFetcher(ETLprocessorLive):
         month_and_day_str = date_obj.strftime("%m%d")
         return year_str + month_and_day_str
 
+    # To test update function
+    def del_data_of_recent_dates(self, api_name, df, dates):
+        # Get the unique dates
+        unique_dates = df['date'].unique()
+        # Get the last two dates
+        dates_to_delete = unique_dates[-dates:]
+        # Filter the DataFrame to keep only rows with dates not in the 'dates_to_delete' list
+        print(dates_to_delete)
+        df = df[~df['date'].isin(dates_to_delete)]
+        print(df.tail(10))
+        self.dic_latest_data_date[api_name] = datetime.strptime(df['date'].unique()[-1], "%Y/%m/%d").date()
+        return df
+
+
     def process_data_api(self, api_name, api_url, map_columns, dir_path):
         today = datetime.today().date()
         os.makedirs(dir_path, exist_ok=True)
         print("Get csv file path...")
         csv_file_path = dir_path + dir_path.split("/")[-2] + ".csv"
         print("  csv file path:", csv_file_path)
-        print(self.dic_latest_data_date[api_name])
+        print("  latest data date:", self.dic_latest_data_date[api_name])
         # if self.dic_latest_data_date[api_name] is None:
         if not os.path.exists(csv_file_path):
             print("First-time data download...")
             print("  Get json data and convert to dataframe...")
+            print("    api_url:", api_url)
             df = self.fetch_json_to_df(api_url)
             print("  Reverse the order of data with old data at the top...")
             df = df[::-1].reset_index(drop=True)
             print(df.tail(10))
+            print("  Delete the data of the two most recent dates (To test update function)")
+            df = self.del_data_of_recent_dates(api_name, df, 2)
             print("  Write to csv")
             with open(csv_file_path, "w") as f:
                 df.to_csv(f, index=False, header=False)
             # Update latest_data_date
-            self.dic_latest_data_date[api_name] = today
+            # self.dic_latest_data_date[api_name] = today
         else:
             print("Update csv file...")
             df = None
             latest_data_date = self.dic_latest_data_date[api_name]
             while latest_data_date < today:
                 latest_data_date += timedelta(days=1)
-                print("  Current date:", latest_data_date)
-                date_str = self.date_to_roc_year_str(latest_data_date)
-                updated_api_ur = api_url + date_str
-                if df is None:
-                    df = self.fetch_json_to_df(api_url)
+                # Append parameters to the original URL
+                if api_name == "API1":
+                    date_str = self.date_to_roc_year_str(latest_data_date)
                 else:
-                    df = pd.concat([df, self.fetch_json_to_df(api_url)], ignore_index=True)
+                    date_str = latest_data_date.strftime("%Y/%m/%d")
+                print("  Current date:", date_str)
+                updated_api_url = api_url + date_str
+                if df is None:
+                    df = self.fetch_json_to_df(updated_api_url)
+                    ## current_date = datetime.now().date()
+                    # date_list = ['日期' , 'date' , 'transDate']
+                    if "交易日期" in df.columns:
+                        df["交易日期"] = df["交易日期"].apply(self.roc_to_ad)
+                    # for date in date_list:
+                    #    if date in df.columns:
+                    #        df[date] = df[date].apply(self.format_ad)
+                    print(updated_api_url, df)
+                else:
+                    df2 = self.fetch_json_to_df(updated_api_url)
+                    print(updated_api_url, df2) if len(df2) != 0 else None
+                    df = pd.concat([df, df2], ignore_index=True)
             print("  Write to csv")
-            with open(csv_file_path, "a") as f:
-                df.to_csv(f, index=False, header=False)
-            print(df.tail(10))
+            if df is not None:
+                with open(csv_file_path, "a") as f:
+                    df.to_csv(f, index=False, header=False)
+                print(df.tail(10))
             # Update latest_data_date
             self.dic_latest_data_date[api_name] = latest_data_date
-        print(self.dic_latest_data_date)
+        print("\n", self.dic_latest_data_date, "\n")
 
 if __name__ == "__main__":
     etl_processor = ExchangeFetcher("api_config_meat.json")
-    # api_live_list_day = [f"API{i}" for i in range(1, 9)]
-    api_live_list_day = [f"API{i}" for i in range(1, 2)]
-    for api in api_live_list_day:
-        etl_processor.process_api(api)
-#    schedule.every().day.at("00:00").do(day_job)
-#    while True:
-#        schedule.run_pending()
-#        time.sleep(1)
+    for i in range(2):
+        api_live_list_day = [f"API{i}" for i in range(7, 8)]
+        for api in api_live_list_day:
+            etl_processor.process_api(api)
 
