@@ -1,62 +1,71 @@
 {
     "API1": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/AnimalTransData.aspx?$filter=TransDate=",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/AnimalTransData.aspx?$filter=TransDate=",
+        "url_api": "https://data.moa.gov.tw/api/v1/PorkTransType/?TransDate=",
         "path": "./data/product_data/data/pig/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "肉_毛豬"
     },
     "API2": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalChickenData.aspx",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalChickenData.aspx",
+        "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_Chicken/?Start_time=",
         "path": "./data/product_data/data/poultry_trans_local_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "土雞/紅羽土雞/黑羽土雞"
     },
     "API3": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalRedChickenData.aspx",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalRedChickenData.aspx",
+        "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_RedFeather/?Start_time=",
         "path": "./data/product_data/data/poultry_trans_local_red_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "紅羽土雞"
     },
     "API4": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalBlackChickenData.aspx?$StartDate=",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalBlackChickenData.aspx?$StartDate=",
+        "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_BlackFeather/?Start_time=",
         "path": "./data/product_data/data/poultry_trans_local_black_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "黑羽土雞"
     },
     "API5": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransGooseDailyPriceData.aspx",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransGooseDailyPriceData.aspx",
+        "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_Goose_Day/?Start_time=",
         "path": "./data/product_data/data/poultry_trans_goose/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "鵝"
     },
     "API6": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransGooseDuckData.aspx",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransGooseDuckData.aspx",
+        "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_Goose_Duck_Duckegg/?Start_time=",
         "path": "./data/product_data/data/poultry_trans_goose_duck/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "肉鵝/番鴨/鴨蛋"
     },
     "API7": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransBoiledChickenData.aspx",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransBoiledChickenData.aspx",
+        "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_BoiledChicken_Eggs/?Start_time=",
         "path": "./data/product_data/data/poultry_trans_boiled_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "白肉雞/雞蛋"
     },
     "API8": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/BeefPriceService.aspx?$filter=date+like+",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/BeefPriceService.aspx?$filter=date+like+",
+        "url_api": "",
         "path": "./data/product_data/data/beef_price_service/",
         "columns": [],
         "data_processor": "process_data_api",
         "備註": "肥育乳公牛550公斤以上"
     },
     "API9": {
-        "url": "https://data.moa.gov.tw/Service/OpenData/FromM/SheepTransData.aspx?$filter=transDate+like+",
+        "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/SheepTransData.aspx?$filter=transDate+like+",
+        "url_api": "https://data.moa.gov.tw/api/v1/SheepQuotation/?Start_time=",
         "path": "./data/product_data/data/sheep_trans_data/",
         "columns": [],
         "data_processor": "process_data_api",
