@@ -10,8 +10,7 @@ import schedule
 
 class ETLprocessorLive(ETLprocessor):
     def __init__(self, config_file) -> None:
-        with open(config_file, "r") as file:
-            self.config = json.load(file)
+        super().__init__(config_file)
 
     def process_api(self, api_name):
         return super().process_api(api_name)
