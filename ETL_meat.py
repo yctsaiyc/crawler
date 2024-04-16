@@ -66,8 +66,8 @@ class ExchangeFetcher(ETLprocessorLive):
     def update_config_latest_data_date(self, api_name, last_row):
         for col_name in ["date", "transDate"]:
             try:
-                latest_data_date = last_row[col_name]
-                self.config[api_name]["latest_data_date"] = latest_data_date
+                latest_data_date_str = last_row[col_name]
+                self.config[api_name]["latest_data_date"] = latest_data_date_str
                 with open("api_config_meat.json", "w", encoding="utf-8") as file:
                     json.dump(self.config, file, ensure_ascii=False, indent=4)
                 print(f"Update {api_name} latest_data_date: {last_row[col_name]}")
@@ -81,11 +81,12 @@ class ExchangeFetcher(ETLprocessorLive):
         print("Get api info...")
         url = self.config[api_name]["url_opendata"]
         print("  url:", url)
-        latest_data_date = self.config[api_name]["latest_data_date"]
-        print("  latest data date:", latest_data_date)
+        latest_data_date_str = self.config[api_name]["latest_data_date"]
+        print("  latest data date:", latest_data_date_str)
         print("Get csv file path...")
         csv_file_path = dir_path + dir_path.split("/")[-2] + ".csv"
         print("  csv file path:", csv_file_path)
+
         if not os.path.exists(csv_file_path):
             print("First-time data download...")
             print("  Get json data and convert to dataframe...")
@@ -102,37 +103,58 @@ class ExchangeFetcher(ETLprocessorLive):
                 df.to_csv(f, index=False, header=False)
             self.update_config_latest_data_date(api_name, df.iloc[-1])
 
+        else:
+            print("Update csv file...")
+            df = None
 
-#        else:
-#            print("Update csv file...")
-#            df = None
-#            while latest_data_date < today:
-#                latest_data_date += timedelta(days=1)
-#                # Append parameters to the original URL
-#                if api_name == "API1":
-#                    date_str = self.date_to_roc_year_str(latest_data_date)
-#                else:
-#                    date_str = latest_data_date.strftime("%Y/%m/%d")
-#                print("  Current date:", date_str)
-#                updated_api_url = api_url + date_str
-#                if df is None:
-#                    df = self.fetch_json_to_df(updated_api_url)
-#                    for date in ["日期", "date", "transDate"]:
-#                        if df is not None and date in df.columns:
-#                            df[date] = df[date].apply(self.roc_to_ad)
-#                            break
-#                    print(updated_api_url, df)
-#                else:
-#                    df2 = self.fetch_json_to_df(updated_api_url)
-#                    print(updated_api_url, df2) if len(df2) != 0 else None
-#                    df = pd.concat([df, df2], ignore_index=True)
-#            print("  Write to csv")
-#            if df is not None:
-#                with open(csv_file_path, "a") as f:
-#                    df.to_csv(f, index=False, header=False)
-#                print(df.tail(10))
-#            # Update latest_data_date
-#            self.dic_latest_data_date[api_name] = latest_data_date
+            if api_name == "API1":
+                sys.exit()  # {TODO}
+                print("API1")
+                # date_str = self.date_to_roc_year_str(latest_data_date_str)
+            else:
+                pass
+
+            if (
+                False
+            ):  # {TODO} If the filter of the opendata method is invalid, use the api method
+                url = self.config[api_name]["url_api"]
+            else:
+                pass
+
+            latest_data_date = datetime.strptime(
+                latest_data_date_str, "%Y/%m/%d"
+            ).date()
+            while latest_data_date < today:
+                latest_data_date += timedelta(days=1)
+                print("  Current date:", latest_data_date)
+                # Append parameters to the original URL
+                updated_url = url + latest_data_date.strftime("%Y/%m/%d")
+                if df is None:
+                    df = self.fetch_json_to_df(updated_url)
+                    for date in ["日期", "date", "transDate"]:
+                        try:
+                            df[date] = df[date].apply(self.roc_to_ad)
+                            break
+                        except KeyError:
+                            # except (KeyError, TypeError): # df is None
+                            pass
+                    print(updated_url, df)
+                else:
+                    df2 = self.fetch_json_to_df(updated_url)
+                    if len(df2) != 0:
+                        print("  Reverse the order of data with old data at the top...")
+                        df2 = df2[::-1].reset_index(drop=True)
+                        print(updated_url, df2)
+                        df = pd.concat([df, df2], ignore_index=True)
+
+            print("  Write to csv")
+            if df is not None:
+                with open(csv_file_path, "a") as f:
+                    df.to_csv(f, index=False, header=False)
+                print(df.tail(10))
+            self.update_config_latest_data_date(
+                api_name, df.iloc[-1]
+            )  # {TODO} Error if df is empty
 
 
 if __name__ == "__main__":
