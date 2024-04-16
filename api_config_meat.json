@@ -5,6 +5,7 @@
         "path": "./data/product_data/data/pig/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "1070625",
         "備註": "肉_毛豬"
     },
     "API2": {
@@ -13,6 +14,7 @@
         "path": "./data/product_data/data/poultry_trans_local_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2010/10/07",
         "備註": "土雞/紅羽土雞/黑羽土雞"
     },
     "API3": {
@@ -21,6 +23,7 @@
         "path": "./data/product_data/data/poultry_trans_local_red_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2014/04/01",
         "備註": "紅羽土雞"
     },
     "API4": {
@@ -29,6 +32,7 @@
         "path": "./data/product_data/data/poultry_trans_local_black_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2014/04/01",
         "備註": "黑羽土雞"
     },
     "API5": {
@@ -37,6 +41,7 @@
         "path": "./data/product_data/data/poultry_trans_goose/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2009/01/01",
         "備註": "鵝"
     },
     "API6": {
@@ -45,6 +50,7 @@
         "path": "./data/product_data/data/poultry_trans_goose_duck/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2010/10/07",
         "備註": "肉鵝/番鴨/鴨蛋"
     },
     "API7": {
@@ -53,6 +59,7 @@
         "path": "./data/product_data/data/poultry_trans_boiled_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2010/10/07",
         "備註": "白肉雞/雞蛋"
     },
     "API8": {
@@ -61,6 +68,7 @@
         "path": "./data/product_data/data/beef_price_service/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "2024/01/01",
         "備註": "肥育乳公牛550公斤以上"
     },
     "API9": {
@@ -69,6 +77,7 @@
         "path": "./data/product_data/data/sheep_trans_data/",
         "columns": [],
         "data_processor": "process_data_api",
+        "latest_data_date": "1999/01/01",
         "備註": "市場羊隻日行情資料"
     }
 }
