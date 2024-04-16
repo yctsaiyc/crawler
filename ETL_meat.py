@@ -11,18 +11,6 @@ import schedule
 class ExchangeFetcher(ETLprocessorLive):
     def __init__(self, config_file) -> None:
         super().__init__(config_file)
-        self.dic_url_opendata = {}
-        self.dic_url_api = {}
-        self.dic_latest_data_date = {}
-        for api_name in self.config:
-            self.dic_latest_data_date[api_name] = self.config[api_name][
-                "latest_data_date"
-            ]
-            self.dic_url_opendata[api_name] = self.config[api_name]["url_opendata"]
-            self.dic_url_api[api_name] = self.config[api_name]["url_api"]
-        print(self.dic_url_opendata)
-        print(self.dic_url_api)
-        print(self.dic_latest_data_date)
 
     def process_api(self, api_name):
         return super().process_api(api_name)
