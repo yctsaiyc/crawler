@@ -11,17 +11,25 @@ import schedule
 class ExchangeFetcher(ETLprocessorLive):
     def __init__(self, config_file) -> None:
         super().__init__(config_file)
+        self.dic_url_opendata = {}
+        self.dic_url_api = {}
         self.dic_latest_data_date = {}
         for api_name in self.config:
-            # self.dic_latest_data_date[api_name] = None
-            self.dic_latest_data_date[api_name] = date(2024, 3, 25)  # date(2010, 1, 1)
+            self.dic_latest_data_date[api_name] = self.config[api_name][
+                "latest_data_date"
+            ]
+            self.dic_url_opendata[api_name] = self.config[api_name]["url_opendata"]
+            self.dic_url_api[api_name] = self.config[api_name]["url_api"]
+        print(self.dic_url_opendata)
+        print(self.dic_url_api)
+        print(self.dic_latest_data_date)
 
     def process_api(self, api_name):
         return super().process_api(api_name)
 
-    def fetch_json_to_df(self, api_url):
+    def fetch_json_to_df(self, url):
         try:
-            r = requests.get(api_url)
+            r = requests.get(url)
             content = json.loads(r.text)
             df = pd.DataFrame(content)
             return df
@@ -128,7 +136,7 @@ class ExchangeFetcher(ETLprocessorLive):
 
 if __name__ == "__main__":
     etl_processor = ExchangeFetcher("api_config_meat.json")
-    for i in range(2):
-        api_live_list_day = [f"API{i}" for i in range(8, 10)]
-        for api in api_live_list_day:
-            etl_processor.process_api(api)
+    # for i in range(2):
+    #    api_live_list_day = [f"API{i}" for i in range(8, 10)]
+    #    for api in api_live_list_day:
+    #        etl_processor.process_api(api)
