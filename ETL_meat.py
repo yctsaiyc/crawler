@@ -25,55 +25,68 @@ class ExchangeFetcher(ETLprocessorLive):
         except Exception as e:
             print("ERROR:", e)
 
-    #    def roc_year_str_to_date(self, roc_year_str):
-    #        # Convert ROC year string to Gregorian year
-    #        gregorian_year = int(roc_year_str[:-4]) + 1911
-    #        # Extract month and day from the ROC year string
-    #        month = int(roc_year_str[-4:-2])
-    #        day = int(roc_year_str[-2:])
-    #        # Create a datetime object for the Gregorian date
-    #        gregorian_date = datetime(gregorian_year, month, day)
-    #        # Extract date part from datetime object
-    #        return gregorian_date.date()
+    def roc_str_to_ad_str(self, roc_str):
+        year = int(roc_year_str[:-4]) + 1911
+        year_str = str(year)
+        month_and_day_str = roc_str[-4:]
+        return year_str + month_and_day_str
+
+    # # To test update function
+    # def del_data_of_recent_dates(self, api_name, df, dates):
+    #     unique_dates = []
+    #     for column_name in ["date", "transDate"]:
+    #         # Check if the column exists in the DataFrame
+    #         if column_name in df.columns:
+    #             # Get unique dates from the column
+    #             unique_dates = df[column_name].unique()
+    #             # Get the last two dates
+    #             dates_to_delete = unique_dates[-dates:]
+    #             # Filter the DataFrame to keep only rows with dates not in the 'dates_to_delete' list
+    #             print(dates_to_delete)
+    #             df = df[~df[column_name].isin(dates_to_delete)]
+    #             print(df.tail(10))
+    #             # Update the latest data date
+    #             self.dic_latest_data_date[api_name] = datetime.strptime(
+    #                 df[column_name].unique()[-1], "%Y/%m/%d"
+    #             ).date()
+    #             # Break the loop once the column is found
+    #             break
+    #     return df
 
     def date_to_roc_year_str(self, date_obj):
         year_str = str(date_obj.year - 1911)
         month_and_day_str = date_obj.strftime("%m%d")
         return year_str + month_and_day_str
 
-    # To test update function
-    def del_data_of_recent_dates(self, api_name, df, dates):
-        unique_dates = []
-        for column_name in ["date", "transDate"]:
-            # Check if the column exists in the DataFrame
-            if column_name in df.columns:
-                # Get unique dates from the column
-                unique_dates = df[column_name].unique()
-                # Get the last two dates
-                dates_to_delete = unique_dates[-dates:]
-                # Filter the DataFrame to keep only rows with dates not in the 'dates_to_delete' list
-                print(dates_to_delete)
-                df = df[~df[column_name].isin(dates_to_delete)]
-                print(df.tail(10))
-                # Update the latest data date
-                self.dic_latest_data_date[api_name] = datetime.strptime(
-                    df[column_name].unique()[-1], "%Y/%m/%d"
-                ).date()
-                # Break the loop once the column is found
-                break
-        return df
+    def append_date_to_url(self, api_name, latest_data_date, method="opendata"):
+        if api_name == "API1":
+            date_str = date_to_roc_year_str(latest_data_date)
+        else:
+            date_str = latest_data_date.strftime("%Y/%m/%d")
+
+        if method == "opendata":
+            if api_name == "API1": # {TODO}
+                print("The filter of opendata method is invalid. Use api method.")
+                method = "api"
+
+        url = self.config[api_name][f"url_{method}"] + date_str
+        print("url:", url)
+        return url
 
     def update_config_latest_data_date(self, api_name, last_row):
         for col_name in ["date", "transDate"]:
             try:
                 latest_data_date_str = last_row[col_name]
+                if api_name == "API1":
+                    # latest_data_date_str = self.roc_str_to_ad_str()
+                    pass # {TODO}
                 self.config[api_name]["latest_data_date"] = latest_data_date_str
                 with open("api_config_meat.json", "w", encoding="utf-8") as file:
                     json.dump(self.config, file, ensure_ascii=False, indent=4)
                 print(f"Update {api_name} latest_data_date: {last_row[col_name]}")
                 break
-            except KeyError:
-                pass
+            except KeyError as e:
+                print("Error:", e)
 
     def process_data_api(self, api_name, map_columns, dir_path):
         today = datetime.today().date()
@@ -106,46 +119,41 @@ class ExchangeFetcher(ETLprocessorLive):
         else:
             print("Update csv file...")
             df = None
+            # latest_data_date = datetime.strptime(latest_data_date_str, "%Y/%m/%d").date()
 
-            if api_name == "API1":
-                sys.exit()  # {TODO}
-                print("API1")
-                # date_str = self.date_to_roc_year_str(latest_data_date_str)
-            else:
-                pass
+            special_apis = ["API1", "API2", "API8"]
 
-            if (
-                False
-            ):  # {TODO} If the filter of the opendata method is invalid, use the api method
-                url = self.config[api_name]["url_api"]
-            else:
-                pass
+            if api_name not in special_apis:
+                pass # {TODO}
 
-            latest_data_date = datetime.strptime(
-                latest_data_date_str, "%Y/%m/%d"
-            ).date()
-            while latest_data_date < today:
-                latest_data_date += timedelta(days=1)
-                print("  Current date:", latest_data_date)
-                # Append parameters to the original URL
-                updated_url = url + latest_data_date.strftime("%Y/%m/%d")
-                if df is None:
-                    df = self.fetch_json_to_df(updated_url)
-                    for date in ["日期", "date", "transDate"]:
-                        try:
-                            df[date] = df[date].apply(self.roc_to_ad)
-                            break
-                        except KeyError:
-                            # except (KeyError, TypeError): # df is None
-                            pass
-                    print(updated_url, df)
+            else: # API1, API8
+                if api_name == "API2":
+                    pass # {TODO}
+
                 else:
-                    df2 = self.fetch_json_to_df(updated_url)
-                    if len(df2) != 0:
-                        print("  Reverse the order of data with old data at the top...")
-                        df2 = df2[::-1].reset_index(drop=True)
-                        print(updated_url, df2)
-                        df = pd.concat([df, df2], ignore_index=True)
+                    latest_data_date = datetime.strptime(latest_data_date_str, "%Y/%m/%d").date()
+                    while latest_data_date < today:
+                        latest_data_date += timedelta(days=1)
+                        print("  Current date:", latest_data_date)
+                        url = self.append_date_to_url(api_name, latest_data_date)
+    
+                        if df is None:
+                            df = self.fetch_json_to_df(url)
+                            # for date in ["日期", "date", "transDate"]:
+                            #     try:
+                            #         df[date] = df[date].apply(self.roc_to_ad)
+                            #         break
+                            #     # except (KeyError, TypeError): # df is None
+                            #     except KeyError:
+                            #         pass
+                        else:
+                            df2 = self.fetch_json_to_df(url)
+                            if len(df2) != 0:
+                                print("  Reverse the order of data with old data at the top...")
+                                df2 = df2[::-1].reset_index(drop=True)
+                                df = pd.concat([df, df2], ignore_index=True)
+
+                        print(df)
 
             print("  Write to csv")
             if df is not None:
@@ -160,6 +168,6 @@ class ExchangeFetcher(ETLprocessorLive):
 if __name__ == "__main__":
     etl_processor = ExchangeFetcher("api_config_meat.json")
     for i in range(1):
-        api_live_list_day = [f"API{i}" for i in range(8, 9)]
+        api_live_list_day = [f"API{i}" for i in [8]]
         for api in api_live_list_day:
             etl_processor.process_api(api)
