@@ -20,7 +20,7 @@ class ExchangeFetcher(ETLprocessorLive):
         content = json.loads(r.text)
         try:
             content = content["Data"]  # When using api method
-        except KeyError:
+        except TypeError:
             pass
         df = pd.DataFrame(content)
         return df
@@ -31,28 +31,6 @@ class ExchangeFetcher(ETLprocessorLive):
         month_and_day_str = roc_str[-4:]
         return year_str + month_and_day_str
 
-    # # To test update function
-    # def del_data_of_recent_dates(self, api_name, df, dates):
-    #     unique_dates = []
-    #     for column_name in ["date", "transDate"]:
-    #         # Check if the column exists in the DataFrame
-    #         if column_name in df.columns:
-    #             # Get unique dates from the column
-    #             unique_dates = df[column_name].unique()
-    #             # Get the last two dates
-    #             dates_to_delete = unique_dates[-dates:]
-    #             # Filter the DataFrame to keep only rows with dates not in the 'dates_to_delete' list
-    #             print(dates_to_delete)
-    #             df = df[~df[column_name].isin(dates_to_delete)]
-    #             print(df.tail(10))
-    #             # Update the latest data date
-    #             self.dic_latest_data_date[api_name] = datetime.strptime(
-    #                 df[column_name].unique()[-1], "%Y/%m/%d"
-    #             ).date()
-    #             # Break the loop once the column is found
-    #             break
-    #     return df
-
     def date_to_roc_year_str(self, date_obj):
         year_str = str(date_obj.year - 1911)
         month_and_day_str = date_obj.strftime("%m%d")
@@ -61,14 +39,15 @@ class ExchangeFetcher(ETLprocessorLive):
     def append_date_to_url(self, api_name, latest_data_date, method="opendata"):
         if api_name == "API1":
             date_str = date_to_roc_year_str(latest_data_date)
+
         else:
             if isinstance(latest_data_date, str):
-                date_str = latest_data_date
-            elif isinstance(latest_data_date, date):
-                date_str = latest_data_date.strftime("%Y/%m/%d")
-            else:
-                print("Error: Wrong data type")
-                return
+                latest_data_date = datetime.strptime(
+                    latest_data_date, "%Y/%m/%d"
+                ).date()
+
+            latest_data_date += timedelta(days=1)
+            date_str = latest_data_date.strftime("%Y/%m/%d")
 
         if method == "opendata":
             if api_name in [
@@ -79,17 +58,20 @@ class ExchangeFetcher(ETLprocessorLive):
                 "API5",
                 "API6",
                 "API7",
-            ]:  # {TODO}
+            ]:  # {TODO}  # Check if the filter is valid.
                 print("The filter of opendata method is invalid. Use api method.")
                 method = "api"
+
             else:
                 url = self.config[api_name][f"url_{method}"] + date_str
-                # {TODO}
+                # {TODO}  # Append EndDate
 
         if method == "api":
             url = self.config[api_name][f"url_{method}"] + date_str
+
             if api_name not in ["API1"]:
                 url = url + "&End_time=" + datetime.today().date().strftime("%Y/%m/%d")
+
             else:
                 pass  # {TODO}
 
@@ -131,12 +113,10 @@ class ExchangeFetcher(ETLprocessorLive):
             print("  Reverse the order of data with old data at the top...")
             df = df[::-1].reset_index(drop=True)
             if api_name == "API4":
-                pass  # {TODO}
+                date_column = df.pop("日期")
+                df.insert(0, "日期", date_column)
+
             print(df.tail(10))
-            # print(
-            #     "  Delete the data of the two most recent dates (To test update function)"
-            # )
-            # df = self.del_data_of_recent_dates(api_name, df, 2)
             print("  Write to csv...")
             with open(csv_file_path, "w") as f:
                 df.to_csv(f, index=False, header=False)
@@ -144,7 +124,6 @@ class ExchangeFetcher(ETLprocessorLive):
 
         else:
             print("Update csv file...")
-            # latest_data_date = datetime.strptime(latest_data_date_str, "%Y/%m/%d").date()
 
             special_apis = ["API1", "API2", "API8"]
 
@@ -170,13 +149,6 @@ class ExchangeFetcher(ETLprocessorLive):
 
                         if df is None:
                             df = self.fetch_json_to_df(url)
-                            # for date in ["日期", "date", "transDate"]:
-                            #     try:
-                            #         df[date] = df[date].apply(self.roc_to_ad)
-                            #         break
-                            #     # except (KeyError, TypeError): # df is None
-                            #     except KeyError:
-                            #         pass
                         else:
                             df2 = self.fetch_json_to_df(url)
                             if len(df2) != 0:
