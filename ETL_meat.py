@@ -110,42 +110,47 @@ class ExchangeFetcher(ETLprocessorLive):
         else:
             print("Update csv file...")
 
-            special_apis = ["API1", "API2", "API8"]
+            if api_name == "API2":
+                print("  The data stopped updating after 2014/4/1")
+                return
+
+            special_apis = ["API1", "API8"]
 
             if api_name not in special_apis:
                 url = self.append_date_to_url(api_name, latest_data_date_str, "api")
                 df = self.fetch_json_to_df(url)
-                print("  Reverse the order of data with old data at the top...")
-                df = df[::-1].reset_index(drop=True)
+                if len(df) != 0:
+                    print("  Reverse the order of data with old data at the top...")
+                    df = df[::-1].reset_index(drop=True)
+                else:
+                    print("  DataFrame is empty.")
+                    return
 
-            else:
+            else:  # API1, API8
                 df = None
-                if api_name == "API2":
-                    pass  # {TODO}
 
-                else:  # API1, API8
-                    latest_data_date = datetime.strptime(
-                        latest_data_date_str, "%Y/%m/%d"
-                    ).date()
-                    while latest_data_date < today:
-                        latest_data_date += timedelta(days=1)
-                        print("  Current date:", latest_data_date)
-                        url = self.append_date_to_url(
-                            api_name, latest_data_date, "opendata"
-                        )
+                latest_data_date = datetime.strptime(
+                    latest_data_date_str, "%Y/%m/%d"
+                ).date()
+                while latest_data_date < today:
+                    latest_data_date += timedelta(days=1)
+                    print("  Current date:", latest_data_date)
+                    url = self.append_date_to_url(
+                        api_name, latest_data_date, "opendata"
+                    )
 
-                        if df is None:
-                            df = self.fetch_json_to_df(url)
-                        else:
-                            df2 = self.fetch_json_to_df(url)
-                            if len(df2) != 0:
-                                print(
-                                    "  Reverse the order of data with old data at the top..."
-                                )
-                                df2 = df2[::-1].reset_index(drop=True)
-                                df = pd.concat([df, df2], ignore_index=True)
+                    if df is None:
+                        df = self.fetch_json_to_df(url)
+                    else:
+                        df2 = self.fetch_json_to_df(url)
+                        if len(df2) != 0:
+                            print(
+                                "  Reverse the order of data with old data at the top..."
+                            )
+                            df2 = df2[::-1].reset_index(drop=True)
+                            df = pd.concat([df, df2], ignore_index=True)
 
-                        print(df)
+                    print(df)
 
             print("  Write to csv")
             if df is not None and len(df) != 0:
@@ -158,6 +163,6 @@ class ExchangeFetcher(ETLprocessorLive):
 if __name__ == "__main__":
     etl_processor = ExchangeFetcher("api_config_meat.json")
     for i in range(1):
-        api_live_list_day = [f"API{i}" for i in [3, 4, 5, 6, 7]]
+        api_live_list_day = [f"API{i}" for i in [2]]
         for api in api_live_list_day:
             etl_processor.process_api(api)
