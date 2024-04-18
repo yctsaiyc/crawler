@@ -36,7 +36,7 @@ class ExchangeFetcher(ETLprocessorLive):
         month_and_day_str = date_obj.strftime("%m%d")
         return year_str + month_and_day_str
 
-    def append_date_to_url(self, api_name, latest_data_date, method="opendata"):
+    def append_date_to_url(self, api_name, latest_data_date, method="api"):
         if api_name == "API1":
             date_str = date_to_roc_year_str(latest_data_date)
 
@@ -49,31 +49,16 @@ class ExchangeFetcher(ETLprocessorLive):
             latest_data_date += timedelta(days=1)
             date_str = latest_data_date.strftime("%Y/%m/%d")
 
-        if method == "opendata":
-            if api_name in [
-                "API1",
-                "API2",
-                "API3",
-                "API4",
-                "API5",
-                "API6",
-                "API7",
-            ]:  # {TODO}  # Check if the filter is valid.
-                print("The filter of opendata method is invalid. Use api method.")
-                method = "api"
+        url = self.config[api_name][f"url_{method}"] + date_str
 
-            else:
-                url = self.config[api_name][f"url_{method}"] + date_str
-                # {TODO}  # Append EndDate
+        if method == "opendata":
+            # if ...:  # Check if the filter is valid.
+            #     print("The filter of opendata method is invalid. Use api method.")
+            #     method = "api"
+            pass  # {TODO} Append EndDate
 
         if method == "api":
-            url = self.config[api_name][f"url_{method}"] + date_str
-
-            if api_name not in ["API1"]:
-                url = url + "&End_time=" + datetime.today().date().strftime("%Y/%m/%d")
-
-            else:
-                pass  # {TODO}
+            url = url + "&End_time=" + datetime.today().date().strftime("%Y/%m/%d")
 
         print("url:", url)
         return url
@@ -128,7 +113,7 @@ class ExchangeFetcher(ETLprocessorLive):
             special_apis = ["API1", "API2", "API8"]
 
             if api_name not in special_apis:
-                url = self.append_date_to_url(api_name, latest_data_date_str)
+                url = self.append_date_to_url(api_name, latest_data_date_str, "api")
                 df = self.fetch_json_to_df(url)
                 print("  Reverse the order of data with old data at the top...")
                 df = df[::-1].reset_index(drop=True)
@@ -145,7 +130,9 @@ class ExchangeFetcher(ETLprocessorLive):
                     while latest_data_date < today:
                         latest_data_date += timedelta(days=1)
                         print("  Current date:", latest_data_date)
-                        url = self.append_date_to_url(api_name, latest_data_date)
+                        url = self.append_date_to_url(
+                            api_name, latest_data_date, "opendata"
+                        )
 
                         if df is None:
                             df = self.fetch_json_to_df(url)
