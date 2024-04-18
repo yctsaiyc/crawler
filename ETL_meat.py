@@ -36,26 +36,18 @@ class ExchangeFetcher(ETLprocessorLive):
         month_and_day_str = date_obj.strftime("%m%d")
         return year_str + month_and_day_str
 
-    def append_date_to_url(self, api_name, latest_data_date, method="api"):
-        if api_name == "API1":
-            date_str = date_to_roc_year_str(latest_data_date)
+    def append_date_to_url(self, api_name, start_date, method="api"):
+        match api_name:
+            case "API1":
+                start_date_str = date_to_roc_year_str(start_date)
+                print("  Current date:", start_date_str)
+            case "API8":
+                start_date_str = start_date.strftime("%Y/%m/%d")
+                print("  Current date:", start_date_str)
+            case _:
+                start_date_str = start_date.strftime("%Y/%m/%d")
 
-        else:
-            if isinstance(latest_data_date, str):
-                latest_data_date = datetime.strptime(
-                    latest_data_date, "%Y/%m/%d"
-                ).date()
-
-            latest_data_date += timedelta(days=1)
-            date_str = latest_data_date.strftime("%Y/%m/%d")
-
-        url = self.config[api_name][f"url_{method}"] + date_str
-
-        if method == "opendata":
-            # if ...:  # Check if the filter is valid.
-            #     print("The filter of opendata method is invalid. Use api method.")
-            #     method = "api"
-            pass  # {TODO} Append EndDate
+        url = self.config[api_name][f"url_{method}"] + start_date_str
 
         if method == "api":
             url = url + "&End_time=" + datetime.today().date().strftime("%Y/%m/%d")
@@ -73,7 +65,7 @@ class ExchangeFetcher(ETLprocessorLive):
                 self.config[api_name]["latest_data_date"] = latest_data_date_str
                 with open("api_config_meat.json", "w", encoding="utf-8") as file:
                     json.dump(self.config, file, ensure_ascii=False, indent=4)
-                print(f"Update {api_name} latest_data_date: {last_row[col_name]}")
+                print(f"Update {api_name} latest_data_date: {last_row[col_name]}\n\n")
                 break
             except KeyError as e:
                 # print("Error:", e)
@@ -114,55 +106,50 @@ class ExchangeFetcher(ETLprocessorLive):
                 print("  The data stopped updating after 2014/4/1")
                 return
 
-            special_apis = ["API1", "API8"]
+            latest_data_date = datetime.strptime(
+                latest_data_date_str, "%Y/%m/%d"
+            ).date()
+            loop_apis = ["API1", "API8"]
 
-            if api_name not in special_apis:
-                url = self.append_date_to_url(api_name, latest_data_date_str, "api")
+            if api_name not in loop_apis:
+                url = self.append_date_to_url(
+                    api_name, latest_data_date + timedelta(days=1), "api"
+                )
                 df = self.fetch_json_to_df(url)
-                if len(df) != 0:
-                    print("  Reverse the order of data with old data at the top...")
-                    df = df[::-1].reset_index(drop=True)
-                else:
-                    print("  DataFrame is empty.")
-                    return
 
-            else:  # API1, API8
+            else:
                 df = None
 
-                latest_data_date = datetime.strptime(
-                    latest_data_date_str, "%Y/%m/%d"
-                ).date()
                 while latest_data_date < today:
                     latest_data_date += timedelta(days=1)
-                    print("  Current date:", latest_data_date)
                     url = self.append_date_to_url(
                         api_name, latest_data_date, "opendata"
                     )
-
-                    if df is None:
+                    if df is None or len(df) == 0:
                         df = self.fetch_json_to_df(url)
                     else:
                         df2 = self.fetch_json_to_df(url)
                         if len(df2) != 0:
-                            print(
-                                "  Reverse the order of data with old data at the top..."
-                            )
-                            df2 = df2[::-1].reset_index(drop=True)
                             df = pd.concat([df, df2], ignore_index=True)
-
                     print(df)
 
+            if len(df) == 0:
+                print("  No new data")
+                return
+            else:
+                print("  Reverse the order of data with old data at the top...")
+                df = df[::-1].reset_index(drop=True)
+
             print("  Write to csv")
-            if df is not None and len(df) != 0:
-                with open(csv_file_path, "a") as f:
-                    df.to_csv(f, index=False, header=False)
-                print(df.tail(10))
-                self.update_config_latest_data_date(api_name, df.iloc[-1])
+            with open(csv_file_path, "a") as f:
+                df.to_csv(f, index=False, header=False)
+            print(df.tail(10))
+            self.update_config_latest_data_date(api_name, df.iloc[-1])
 
 
 if __name__ == "__main__":
     etl_processor = ExchangeFetcher("api_config_meat.json")
     for i in range(1):
-        api_live_list_day = [f"API{i}" for i in [2]]
+        api_live_list_day = [f"API{i}" for i in [8]]
         for api in api_live_list_day:
             etl_processor.process_api(api)
