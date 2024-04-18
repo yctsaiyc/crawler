@@ -5,7 +5,7 @@
         "path": "./data/product_data/data/pig/",
         "columns": [],
         "data_processor": "process_data_api",
-        "latest_data_date": "1070625",
+        "latest_data_date": "2018/06/25",
         "備註": "肉_毛豬"
     },
     "API2": {
