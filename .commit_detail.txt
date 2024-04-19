@@ -1,0 +1,21 @@
+完成API1
+
+1. func fetch_json_to_df
+	a. 加arg api_name
+	b. if API1:
+		try: 日期改西元
+		except keyerror
+	b. 搜呼叫func的地方，傳api_name
+		i. func roc_str_to_ad_str
+2. func roc_str_to_ad_str
+	a. m, d參數分開
+	b. 日期格式加/
+3. func append_date_to_url
+	a. del arg "method"
+	b. syntax match -> if
+	c. 呼叫func的地方刪method
+4. func update_config_latest_data_date
+	a. del if API1 statement
+5. func process_data_api
+6. column_name改date_col
+
