@@ -2,7 +2,7 @@
     "API1": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/AnimalTransData.aspx?$filter=TransDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PorkTransType/?TransDate=",
-        "path": "./data/product_data/data/pig/",
+        "path": "/data/product_data/data/pig/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2018/06/25",
@@ -11,7 +11,7 @@
     "API2": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalChickenData.aspx?$StartDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_Chicken/?Start_time=",
-        "path": "./data/product_data/data/poultry_trans_local_chicken/",
+        "path": "/data/product_data/data/poultry_trans_local_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2010/10/07",
@@ -20,7 +20,7 @@
     "API3": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalRedChickenData.aspx?$StartDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_RedFeather/?Start_time=",
-        "path": "./data/product_data/data/poultry_trans_local_red_chicken/",
+        "path": "/data/product_data/data/poultry_trans_local_red_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2014/04/01",
@@ -29,7 +29,7 @@
     "API4": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransLocalBlackChickenData.aspx?$StartDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_BlackFeather/?Start_time=",
-        "path": "./data/product_data/data/poultry_trans_local_black_chicken/",
+        "path": "/data/product_data/data/poultry_trans_local_black_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2014/04/01",
@@ -38,7 +38,7 @@
     "API5": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransGooseDailyPriceData.aspx?$StartDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_Goose_Day/?Start_time=",
-        "path": "./data/product_data/data/poultry_trans_goose/",
+        "path": "/data/product_data/data/poultry_trans_goose/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2009/01/01",
@@ -47,7 +47,7 @@
     "API6": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransGooseDuckData.aspx?$StartDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_Goose_Duck_Duckegg/?Start_time=",
-        "path": "./data/product_data/data/poultry_trans_goose_duck/",
+        "path": "/data/product_data/data/poultry_trans_goose_duck/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2010/10/07",
@@ -56,7 +56,7 @@
     "API7": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/PoultryTransBoiledChickenData.aspx?$StartDate=",
         "url_api": "https://data.moa.gov.tw/api/v1/PoultryTransType_BoiledChicken_Eggs/?Start_time=",
-        "path": "./data/product_data/data/poultry_trans_boiled_chicken/",
+        "path": "/data/product_data/data/poultry_trans_boiled_chicken/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2010/10/07",
@@ -65,7 +65,7 @@
     "API8": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/BeefPriceService.aspx?$filter=date+like+",
         "url_api": "",
-        "path": "./data/product_data/data/beef_price_service/",
+        "path": "/data/product_data/data/beef_price_service/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "2024/01/01",
@@ -74,7 +74,7 @@
     "API9": {
         "url_opendata": "https://data.moa.gov.tw/Service/OpenData/FromM/SheepTransData.aspx?$filter=transDate+like+",
         "url_api": "https://data.moa.gov.tw/api/v1/SheepQuotation/?Start_time=",
-        "path": "./data/product_data/data/sheep_trans_data/",
+        "path": "/data/product_data/data/sheep_trans_data/",
         "columns": [],
         "data_processor": "process_data_api",
         "latest_data_date": "1999/01/01",

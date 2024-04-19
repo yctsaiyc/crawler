@@ -63,7 +63,7 @@ class ExchangeFetcher(ETLprocessorLive):
         return url
 
     def update_config_latest_data_date(self, api_name, last_row):
-        for date_col in ["date", "TransDate", "日期", "交易日期"]:
+        for date_col in ["date", "transDate", "TransDate", "日期", "交易日期"]:
             try:
                 latest_data_date_str = last_row[date_col]
                 self.config[api_name]["latest_data_date"] = latest_data_date_str
@@ -105,7 +105,7 @@ class ExchangeFetcher(ETLprocessorLive):
             print("Update csv file...")
 
             if api_name == "API2":
-                print("  The data stopped updating after 2014/4/1")
+                print("  The data stopped updating after 2014/03/31\n\n")
                 return
 
             latest_data_date = datetime.strptime(
@@ -132,7 +132,7 @@ class ExchangeFetcher(ETLprocessorLive):
                         df2 = self.fetch_json_to_df(api_name, url)
                         print(df2)
                         if len(df2) != 0:
-                            df = pd.concat([df, df2], ignore_index=True)
+                            df = pd.concat([df2, df], ignore_index=True)
 
             if df is None or len(df) == 0:
                 return
@@ -149,6 +149,6 @@ class ExchangeFetcher(ETLprocessorLive):
 if __name__ == "__main__":
     etl_processor = ExchangeFetcher("api_config_meat.json")
     for i in range(1):
-        api_live_list_day = [f"API{i}" for i in [1]]
+        api_live_list_day = [f"API{i}" for i in range(1, 10)]
         for api in api_live_list_day:
             etl_processor.process_api(api)
