@@ -5,7 +5,6 @@ import requests
 import pandas as pd
 import os
 import time
-import schedule
 
 
 class ETLprocessorLive(ETLprocessor):
