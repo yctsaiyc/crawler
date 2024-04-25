@@ -42,6 +42,20 @@ class ExchangeFetcher(ETLprocessorLive):
             url += "&End_time=" + end_date_str
         return url
 
+    def clean_data(self, df):
+        def calculate_avg(x):
+            if isinstance(x, str) and "-" in x:
+                parts = x.split("-")
+                if len(parts) == 2 and parts[0].isdigit() and parts[1].isdigit():
+                    return (int(parts[0]) + int(parts[1])) / 2
+            return x
+
+        for col in df.columns:
+            df[col].replace({"休市": None, "-": None}, inplace=True)
+            df[col] = df[col].apply(calculate_avg)
+
+        return df
+
     def update_config_latest_data_date(self, api_name, last_row):
         for date_col in ["date", "transDate", "TransDate", "日期", "交易日期"]:
             try:
@@ -123,7 +137,8 @@ class ExchangeFetcher(ETLprocessorLive):
                         df2 = self.fetch_json_to_df(api_name, url)
                         # print(df2)
                         if len(df2) != 0:
-                            df = pd.concat([df2, df], ignore_index=True)
+                            # df = pd.concat([df2, df], ignore_index=True)
+                            df = pd.concat([df, df2], ignore_index=True)
 
         if df is None or len(df) == 0:
             return
@@ -136,14 +151,17 @@ class ExchangeFetcher(ETLprocessorLive):
                     pass
 
         # print("  Reverse the order of data with old data at the top...")
-        df = df[::-1].reset_index(drop=True)
+        # df = df[::-1].reset_index(drop=True)
         # print(df.tail(10))
+
+        df = self.clean_data(df)
 
         print("Write to csv...")
         with open(csv_file_path, "w") as f:
             df.to_csv(f, index=False, header=False)
 
-        self.update_config_latest_data_date(api_name, df.iloc[-1])
+        # self.update_config_latest_data_date(api_name, df.iloc[-1])
+        self.update_config_latest_data_date(api_name, df.iloc[0])
 
 
 if __name__ == "__main__":
