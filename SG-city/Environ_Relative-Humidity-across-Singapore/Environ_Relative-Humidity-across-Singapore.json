@@ -1,0 +1,15 @@
+{
+    "name": "Relative-Humidity-across-Singapore",
+    "destination": "/data/Singapore/data/database_dynamic/Singapore/environment/Relative-Humidity-across-Singapore",
+    "docs_needed": [
+        "Relative-Humidity-across-Singapore-metadata.csv",
+        "Relative-Humidity-across-Singapore-data.csv"
+    ],
+    "docs_json_path": [
+        "['metadata']['stations']",
+        "['items'][0]['readings'],['items'][0]['timestamp'],['metadata']['reading_unit']"
+    ],
+    "freq_minute": 1,
+    "remaining_minute": 1,
+    "url": "https://api.data.gov.sg/v1/environment/relative-humidity"
+}

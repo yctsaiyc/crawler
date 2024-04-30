@@ -1,0 +1,15 @@
+{
+    "name": "Air-Temperature-across-Singapore",
+    "destination": "~/data/Airflow/playground/data/SG-city-environment/Air-Temperature-across-Singapore",
+    "docs_needed": [
+        "Air-Temperature-across-Singapore-metadata.csv",
+        "Air-Temperature-across-Singapore-data.csv"
+    ],
+    "docs_json_path": [
+        "['metadata']['stations']",
+        "['items'][0]['readings'],['items'][0]['timestamp'],['metadata']['reading_unit']"
+    ],
+    "freq_minute": 1,
+    "remaining_minute": 1,
+    "url": "https://api.data.gov.sg/v1/environment/air-temperature"
+}
