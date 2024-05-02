@@ -1,15 +1,19 @@
 {
     "name": "Relative-Humidity-across-Singapore",
-    "destination": "/data/Singapore/data/database_dynamic/Singapore/environment/Relative-Humidity-across-Singapore",
-    "docs_needed": [
-        "Relative-Humidity-across-Singapore-metadata.csv",
-        "Relative-Humidity-across-Singapore-data.csv"
+    "url": "https://api.data.gov.sg/v1/environment/relative-humidity",
+    "csv_path": "~/data/Airflow/playground/data/SG-city-environment/Relative-Humidity-across-Singapore",
+    "data_path": [
+		"['items'][0]['timestamp']",
+		"['metadata']['reading_unit']"
     ],
-    "docs_json_path": [
-        "['metadata']['stations']",
-        "['items'][0]['readings'],['items'][0]['timestamp'],['metadata']['reading_unit']"
-    ],
+	"nested_data": {
+        "path_1": "['metadata']['stations']",
+        "fields_1": ["id", "device_id", "name", "location.latitude", "location.longitude"],
+        "merge_key_1": "id",
+        "path_2": "['items'][0]['readings']",
+        "fields_2": ["station_id", "value"],
+        "merge_key_2": "station_id"
+	},
     "freq_minute": 1,
-    "remaining_minute": 1,
-    "url": "https://api.data.gov.sg/v1/environment/relative-humidity"
+    "remaining_minute": 1
 }
