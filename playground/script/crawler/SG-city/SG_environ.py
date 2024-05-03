@@ -1,8 +1,10 @@
+import sys
 import os
 import requests
 import json
 import pandas as pd
 from datetime import datetime
+import pytz
 
 
 def DATA_GOV_SG_api(config):
@@ -34,7 +36,7 @@ def DATA_GOV_SG_api(config):
             config["csv_path"],
             os.path.basename(config["csv_path"])
             + "_"
-            + datetime.now().strftime("%y%m%d%H%M%S")
+            + datetime.now(pytz.timezone('Asia/Taipei')).strftime("%y%m%d%H%M%S")
             + ".csv",
         )
         df.to_csv(csv_path, index=False)
@@ -45,8 +47,7 @@ def DATA_GOV_SG_api(config):
 
 
 if __name__ == "__main__":
-    for d in os.listdir():
-        if os.path.isdir(d) and d.startswith("Environ_"):
-            with open(f"{d}/{d}.json", "r") as file:
-                config = json.load(file)
-                DATA_GOV_SG_api(config)
+    config_file_path = sys.argv[1]
+    with open(config_file_path, 'r') as file:
+        config = json.load(file)
+    DATA_GOV_SG_api(config)
