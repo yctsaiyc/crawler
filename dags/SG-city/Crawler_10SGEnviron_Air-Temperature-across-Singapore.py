@@ -9,6 +9,6 @@ from datetime import timezone, timedelta, datetime
 
 dag = create_dag(
     name="Air-Temperature-across-Singapore",
-    start_date=(2024, 5, 3, 11, 47, 0),
+    start_date=(2024, 5, 3, 0, 0, 0),
     schedule_interval="* * * * *",
 )

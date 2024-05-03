@@ -1,0 +1,53 @@
+{
+   "items":[
+      {
+         "update_timestamp":"2024-05-03T17:11:21+08:00",
+         "timestamp":"2024-05-03T17:00:00+08:00",
+         "forecasts":[
+            {
+               "temperature":{
+                  "low":24,
+                  "high":33
+               },
+               "date":"2024-05-04",
+               "forecast":"Pre-dawn hours and early morning thundery showers\n",
+               "relative_humidity":{
+                  "low":60,
+                  "high":95
+               },
+               "wind":{
+                  "speed":{
+                     "low":5,
+                     "high":20
+                  },
+                  "direction":"SW"
+               },
+               "timestamp":"2024-05-04T00:00:00+08:00"
+            },
+            {
+               "temperature":{
+                  "low":24,
+                  "high":34
+               },
+               "date":"2024-05-07",
+               "forecast":"Late morning and early afternoon thundery showers ",
+               "relative_humidity":{
+                  "low":60,
+                  "high":95
+               },
+               "wind":{
+                  "speed":{
+                     "low":5,
+                     "high":15
+                  },
+                  "direction":"SSW"
+               },
+               "timestamp":"2024-05-07T00:00:00+08:00"
+            }
+         ]
+      }
+   ],
+   "api_info":{
+      "status":"healthy"
+   }
+}

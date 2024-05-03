@@ -18,16 +18,19 @@ def DATA_GOV_SG_api(config):
         if config["nested_data"] != "":
             df = pd.json_normalize(eval(f"data_json{config['nested_data']['path_1']}"))
             df = df[config["nested_data"]["fields_1"]]
-            df2 = pd.json_normalize(eval(f"data_json{config['nested_data']['path_2']}"))
-            df2 = df2[config["nested_data"]["fields_2"]]
-            df = pd.merge(
-                df,
-                df2,
-                how="inner",
-                left_on=config["nested_data"]["merge_key_1"],
-                right_on=config["nested_data"]["merge_key_2"],
-            )
-            df.drop(columns=[config["nested_data"]["merge_key_2"]], inplace=True)
+            if config["nested_data"]["merge_key_1"] != "":
+                df2 = pd.json_normalize(
+                    eval(f"data_json{config['nested_data']['path_2']}")
+                )
+                df2 = df2[config["nested_data"]["fields_2"]]
+                df = pd.merge(
+                    df,
+                    df2,
+                    how="inner",
+                    left_on=config["nested_data"]["merge_key_1"],
+                    right_on=config["nested_data"]["merge_key_2"],
+                )
+                df.drop(columns=[config["nested_data"]["merge_key_2"]], inplace=True)
 
         for col in config["data_path"]:
             df[col.split("'")[-2]] = eval(f"data_json{col}")

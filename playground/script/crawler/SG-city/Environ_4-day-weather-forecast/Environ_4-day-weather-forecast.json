@@ -1,0 +1,23 @@
+{
+    "name": "4-day-weather-forecast",
+    "url": "https://api.data.gov.sg/v1/environment/4-day-weather-forecast",
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/4-day-weather-forecast",
+    "data_path": [
+        "['items'][0]['timestamp']"
+    ],
+    "nested_data": {
+        "path_1": "['items'][0]['forecasts']",
+        "fields_1": [
+            "date",
+            "forecast",
+            "temperature.low",
+            "temperature.high",
+            "relative_humidity.low",
+            "relative_humidity.high",
+            "wind.speed.low",
+            "wind.speed.high",
+            "wind.direction"
+        ],
+        "merge_key_1": ""
+    }
+}
