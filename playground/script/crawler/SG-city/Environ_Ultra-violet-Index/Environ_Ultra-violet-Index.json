@@ -1,0 +1,15 @@
+{
+    "name": "Ultra-violet-Index",
+    "url": "https://api.data.gov.sg/v1/environment/uv-index",
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/Ultra-violet-Index",
+    "common_data_path": [
+    ],
+    "individual_data": {
+        "path_1": "['items'][0]['index']",
+        "fields_1": [
+            "value",
+            "timestamp"
+        ],
+        "merge_key_1": ""
+    }
+}

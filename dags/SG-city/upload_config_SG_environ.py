@@ -15,7 +15,7 @@ def create_dag(name, start_date, schedule_interval):
     }
 
     with DAG(
-        f"upload_config_{name}",
+        f"upload_config_SG_environ_{name}",
         default_args=default_args,
         schedule_interval=schedule_interval,
         max_active_runs=1,

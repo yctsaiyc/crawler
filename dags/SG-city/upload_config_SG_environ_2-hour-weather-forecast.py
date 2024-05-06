@@ -9,6 +9,6 @@ from datetime import timezone, timedelta, datetime
 
 dag = create_dag(
     name="2-hour-weather-forecast",
-    start_date=(2024, 5, 3, 0, 0, 0),
+    start_date=(2024, 5, 6, 15, 30, 0),
     schedule_interval="*/30 * * * *",
 )

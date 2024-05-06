@@ -1,0 +1,44 @@
+{
+    "metadata":{
+        "stations":[
+            {
+                "id":"S117",
+                "device_id":"S117",
+                "name":"Banyan Road",
+                "location":{
+                    "latitude":1.256,
+                    "longitude":103.679
+                }
+            },
+            {
+                "id":"S104",
+                "device_id":"S104",
+                "name":"Woodlands Avenue 9",
+                "location":{
+                    "latitude":1.44387,
+                    "longitude":103.78538
+                }
+            }
+        ],
+        "reading_type":"Wind Dir AVG (S) 10M M1M",
+        "reading_unit":"degrees"
+    },
+    "items":[
+        {
+            "timestamp":"2024-05-06T16:25:00+08:00",
+            "readings":[
+                {
+                    "station_id":"S117",
+                    "value":143
+                },
+                {
+                    "station_id":"S104",
+                    "value":63
+                }
+            ]
+        }
+    ],
+    "api_info":{
+        "status":"healthy"
+    }
+}

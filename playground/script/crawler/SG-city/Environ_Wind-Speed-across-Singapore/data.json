@@ -1,0 +1,44 @@
+{
+    "metadata":{
+        "stations":[
+            {
+                "id":"S108",
+                "device_id":"S108",
+                "name":"Marina Gardens Drive",
+                "location":{
+                    "latitude":1.2799,
+                    "longitude":103.8703
+                }
+            },
+            {
+                "id":"S104",
+                "device_id":"S104",
+                "name":"Woodlands Avenue 9",
+                "location":{
+                    "latitude":1.44387,
+                    "longitude":103.78538
+                }
+            }
+        ],
+        "reading_type":"Wind Speed AVG(S)10M M1M",
+        "reading_unit":"knots"
+    },
+    "items":[
+        {
+            "timestamp":"2024-05-06T16:35:00+08:00",
+            "readings":[
+                {
+                    "station_id":"S108",
+                    "value":2
+                },
+                {
+                    "station_id":"S104",
+                    "value":9.10001
+                }
+            ]
+        }
+    ],
+    "api_info":{
+        "status":"healthy"
+    }
+}
