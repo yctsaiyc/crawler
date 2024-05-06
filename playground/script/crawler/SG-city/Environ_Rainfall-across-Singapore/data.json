@@ -1,0 +1,44 @@
+{
+    "metadata":{
+        "stations":[
+            {
+                "id":"S77",
+                "device_id":"S77",
+                "name":"Alexandra Road",
+                "location":{
+                    "latitude":1.2937,
+                    "longitude":103.8125
+                }
+            },
+            {
+                "id":"S104",
+                "device_id":"S104",
+                "name":"Woodlands Avenue 9",
+                "location":{
+                    "latitude":1.44387,
+                    "longitude":103.78538
+                }
+            }
+        ],
+        "reading_type":"TB1 Rainfall 5 Minute Total F",
+        "reading_unit":"mm"
+    },
+    "items":[
+        {
+            "timestamp":"2024-05-06T09:35:00+08:00",
+            "readings":[
+                {
+                    "station_id":"S77",
+                    "value":0
+                },
+                {
+                    "station_id":"S104",
+                    "value":0
+                }
+            ]
+        }
+    ],
+    "api_info":{
+        "status":"healthy"
+    }
+}

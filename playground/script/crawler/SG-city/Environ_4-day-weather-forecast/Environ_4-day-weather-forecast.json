@@ -2,10 +2,10 @@
     "name": "4-day-weather-forecast",
     "url": "https://api.data.gov.sg/v1/environment/4-day-weather-forecast",
     "csv_path": "~/opt/airflow/playground/data/SG-city-environment/4-day-weather-forecast",
-    "data_path": [
+    "common_data_path": [
         "['items'][0]['timestamp']"
     ],
-    "nested_data": {
+    "individual_data": {
         "path_1": "['items'][0]['forecasts']",
         "fields_1": [
             "date",

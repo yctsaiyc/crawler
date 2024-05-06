@@ -1,0 +1,44 @@
+{
+    "metadata":{
+        "stations":[
+            {
+                "id":"S117",
+                "device_id":"S117",
+                "name":"Banyan Road",
+                "location":{
+                    "latitude":1.256,
+                    "longitude":103.679
+                }
+            },
+            {
+                "id":"S104",
+                "device_id":"S104",
+                "name":"Woodlands Avenue 9",
+                "location":{
+                    "latitude":1.44387,
+                    "longitude":103.78538
+                }
+            }
+        ],
+        "reading_type":"RH 1M F",
+        "reading_unit":"percentage"
+    },
+    "items":[
+        {
+            "timestamp":"2024-05-06T15:20:00+08:00",
+            "readings":[
+                {
+                    "station_id":"S117",
+                    "value":70
+                },
+                {
+                    "station_id":"S104",
+                    "value":67.1
+                }
+            ]
+        }
+    ],
+    "api_info":{
+        "status":"healthy"
+    }
+}

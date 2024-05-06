@@ -7,7 +7,7 @@ from datetime import datetime
 import pytz
 
 
-def DATA_GOV_SG_api(config):
+def SG_environ(config):
 
     response = requests.get(config["url"])
 
@@ -15,24 +15,30 @@ def DATA_GOV_SG_api(config):
         data_json = response.json()
         df = pd.DataFrame()
 
-        if config["nested_data"] != "":
-            df = pd.json_normalize(eval(f"data_json{config['nested_data']['path_1']}"))
-            df = df[config["nested_data"]["fields_1"]]
-            if config["nested_data"]["merge_key_1"] != "":
+        if config["individual_data"] != "":
+            df = pd.json_normalize(
+                eval(f"data_json{config['individual_data']['path_1']}")
+            )
+            df = df.replace("\n", "", regex=True)
+            df = df[config["individual_data"]["fields_1"]]
+
+            if config["individual_data"]["merge_key_1"] != "":
                 df2 = pd.json_normalize(
-                    eval(f"data_json{config['nested_data']['path_2']}")
+                    eval(f"data_json{config['individual_data']['path_2']}")
                 )
-                df2 = df2[config["nested_data"]["fields_2"]]
+                df2 = df2[config["individual_data"]["fields_2"]]
                 df = pd.merge(
                     df,
                     df2,
                     how="inner",
-                    left_on=config["nested_data"]["merge_key_1"],
-                    right_on=config["nested_data"]["merge_key_2"],
+                    left_on=config["individual_data"]["merge_key_1"],
+                    right_on=config["individual_data"]["merge_key_2"],
                 )
-                df.drop(columns=[config["nested_data"]["merge_key_2"]], inplace=True)
+                df.drop(
+                    columns=[config["individual_data"]["merge_key_2"]], inplace=True
+                )
 
-        for col in config["data_path"]:
+        for col in config["common_data_path"]:
             df[col.split("'")[-2]] = eval(f"data_json{col}")
 
         csv_path = os.path.join(
@@ -45,7 +51,6 @@ def DATA_GOV_SG_api(config):
         df.to_csv(csv_path, index=False)
 
     else:
-        # Handle the error, e.g., print an rror message
         print(f"Failed to retrieve data. Sttus code: {response.status_code}")
 
 
@@ -53,4 +58,4 @@ if __name__ == "__main__":
     config_file_path = sys.argv[1]
     with open(config_file_path, "r") as file:
         config = json.load(file)
-    DATA_GOV_SG_api(config)
+    SG_environ(config)

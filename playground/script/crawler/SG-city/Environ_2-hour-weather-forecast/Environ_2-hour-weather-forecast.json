@@ -2,18 +2,25 @@
     "name": "2-hour-weather-forecast",
     "url": "https://api.data.gov.sg/v1/environment/2-hour-weather-forecast",
     "csv_path": "~/opt/airflow/playground/data/SG-city-environment/2-hour-weather-forecast",
-    "data_path": [
+    "common_data_path": [
         "['items'][0]['update_timestamp']",
         "['items'][0]['timestamp']",
         "['items'][0]['valid_period']['start']",
         "['items'][0]['valid_period']['end']"
     ],
-    "nested_data": {
+    "individual_data": {
         "path_1": "['area_metadata']",
-        "fields_1": ["name", "label_location.latitude", "label_location.longitude"],
+        "fields_1": [
+            "name",
+            "label_location.latitude",
+            "label_location.longitude"
+        ],
         "merge_key_1": "name",
         "path_2": "['items'][0]['forecasts']",
-	    "fields_2": ["area", "forecast"],
+        "fields_2": [
+            "area",
+            "forecast"
+        ],
         "merge_key_2": "area"
     }
 }
