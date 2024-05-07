@@ -1,0 +1,21 @@
+{
+    "name": "PM25",
+    "url": "https://api.data.gov.sg/v1/environment/pm25",
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/PM25",
+    "common_data_path": [
+        "['items'][0]['timestamp']",
+        "['items'][0]['update_timestamp']"
+    ],
+	"individual_data": {
+        "path_1": "['region_metadata']",
+        "fields_1": [
+            "name",
+            "label_location.latitude",
+            "label_location.longitude"
+        ],
+        "merge_key_1": "name",
+        "path_2": "['items'][0]['readings']",
+        "fields_2": [],
+        "merge_key_2": "name2"
+	}
+}

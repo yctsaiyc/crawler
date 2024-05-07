@@ -13,30 +13,33 @@ def SG_environ(config):
 
     if response.status_code == 200:
         data_json = response.json()
-        df = pd.DataFrame()
 
-        if config["individual_data"] != "":
-            df = pd.json_normalize(
-                eval(f"data_json{config['individual_data']['path_1']}")
-            )
-            df = df.replace("\n", "", regex=True)
-            df = df[config["individual_data"]["fields_1"]]
+        df = pd.json_normalize(eval(f"data_json{config['individual_data']['path_1']}"))
+        df = df.replace("\n", "", regex=True)
+        df = df[config["individual_data"]["fields_1"]]
 
-            if config["individual_data"]["merge_key_1"] != "":
+        if config["individual_data"]["merge_key_1"] != "":
+
+            if config["name"] == "PM25" or "Pollutant-Standards-Index":
+                df2 = pd.DataFrame.from_dict(
+                    eval(f"data_json{config['individual_data']['path_2']}")
+                )
+                df2["name2"] = df2.index
+
+            else:
                 df2 = pd.json_normalize(
                     eval(f"data_json{config['individual_data']['path_2']}")
                 )
                 df2 = df2[config["individual_data"]["fields_2"]]
-                df = pd.merge(
-                    df,
-                    df2,
-                    how="inner",
-                    left_on=config["individual_data"]["merge_key_1"],
-                    right_on=config["individual_data"]["merge_key_2"],
-                )
-                df.drop(
-                    columns=[config["individual_data"]["merge_key_2"]], inplace=True
-                )
+
+            df = pd.merge(
+                df,
+                df2,
+                how="inner",
+                left_on=config["individual_data"]["merge_key_1"],
+                right_on=config["individual_data"]["merge_key_2"],
+            )
+            df.drop(columns=[config["individual_data"]["merge_key_2"]], inplace=True)
 
         for col in config["common_data_path"]:
             df[col.split("'")[-2]] = eval(f"data_json{col}")

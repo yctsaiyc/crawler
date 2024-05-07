@@ -3,10 +3,10 @@
     "url": "https://api.data.gov.sg/v1/environment/relative-humidity",
     "csv_path": "~/opt/airflow/playground/data/SG-city-environment/Relative-Humidity-across-Singapore",
     "common_data_path": [
-		"['metadata']['reading_unit']",
-		"['items'][0]['timestamp']"
+        "['metadata']['reading_unit']",
+        "['items'][0]['timestamp']"
     ],
-	"individual_data": {
+    "individual_data": {
         "path_1": "['metadata']['stations']",
         "fields_1": [
             "id",
@@ -21,7 +21,7 @@
             "value"
         ],
         "merge_key_2": "station_id"
-	},
+    },
     "freq_minute": 1,
     "remaining_minute": 1
 }
