@@ -6,7 +6,7 @@
         "['items'][0]['timestamp']",
         "['items'][0]['update_timestamp']"
     ],
-	"individual_data": {
+    "individual_data": {
         "path_1": "['region_metadata']",
         "fields_1": [
             "name",
@@ -17,5 +17,5 @@
         "path_2": "['items'][0]['readings']",
         "fields_2": [],
         "merge_key_2": "name2"
-	}
+    }
 }

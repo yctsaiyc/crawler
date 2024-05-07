@@ -24,7 +24,7 @@ def SG_environ(config):
                 df2 = pd.DataFrame.from_dict(
                     eval(f"data_json{config['individual_data']['path_2']}")
                 )
-                df2["name2"] = df2.index
+                df2[config["individual_data"]["merge_key_2"]] = df2.index
 
             else:
                 df2 = pd.json_normalize(
@@ -42,7 +42,15 @@ def SG_environ(config):
             df.drop(columns=[config["individual_data"]["merge_key_2"]], inplace=True)
 
         for col in config["common_data_path"]:
-            df[col.split("'")[-2]] = eval(f"data_json{col}")
+            col_name = col.split("'")[-2]
+
+            if config["name"] == "24-hour-weather-forecast" and col_name in [
+                "low",
+                "high",
+            ]:
+                col_name = col.split("'")[-4] + "." + col_name
+
+            df[col_name] = eval(f"data_json{col}")
 
         csv_path = os.path.join(
             config["csv_path"],
@@ -51,6 +59,7 @@ def SG_environ(config):
             + datetime.now(pytz.timezone("Asia/Taipei")).strftime("%y%m%d%H%M%S")
             + ".csv",
         )
+
         df.to_csv(csv_path, index=False)
 
     else:

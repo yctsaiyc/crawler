@@ -21,7 +21,5 @@
             "value"
         ],
         "merge_key_2": "station_id"
-    },
-    "freq_minute": 1,
-    "remaining_minute": 1
+    }
 }
