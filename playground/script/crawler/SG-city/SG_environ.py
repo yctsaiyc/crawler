@@ -20,7 +20,7 @@ def SG_environ(config):
 
         if config["individual_data"]["merge_key_1"] != "":
 
-            if config["name"] == "PM25" or "Pollutant-Standards-Index":
+            if config["name"] in ["PM25", "Pollutant-Standards-Index"]:
                 df2 = pd.DataFrame.from_dict(
                     eval(f"data_json{config['individual_data']['path_2']}")
                 )

@@ -10,5 +10,5 @@ from datetime import timezone, timedelta, datetime
 dag = create_dag(
     name="Relative-Humidity-across-Singapore",
     start_date=(2024, 5, 6, 15, 30, 0),
-    schedule_interval="* * * * *",
+    schedule_interval="*/10 * * * *",
 )

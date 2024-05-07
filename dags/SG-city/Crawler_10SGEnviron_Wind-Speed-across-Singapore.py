@@ -10,5 +10,5 @@ from datetime import timezone, timedelta, datetime
 dag = create_dag(
     name="Wind-Speed-across-Singapore",
     start_date=(2024, 5, 6, 17, 45, 0),
-    schedule_interval="* * * * *",
+    schedule_interval="*/10 * * * *",
 )
