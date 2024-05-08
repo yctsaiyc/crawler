@@ -402,3 +402,17 @@ meta_df = pd.json_normalize(data_2["area_metadata"])
 meta_df.rename(columns={"name": "area"}, inplace=True)
 df = pd.merge(meta_df, item_df, how="right", on="area")
 print(df)
+
+print("\nA, Ra, Re, WD, WS:")
+item_list = list()
+for i in data_A_Ra_Re_WD_WS["items"]:
+    for r in i["readings"]:
+        r["timestamp"] = i["timestamp"]
+        item_list.append(r)
+item_df = pd.json_normalize(item_list)
+meta_df = pd.json_normalize(data_A_Ra_Re_WD_WS["metadata"]["stations"])
+meta_df.rename(columns={"id": "station_id"}, inplace=True)
+df = pd.merge(meta_df, item_df, how="right", on="station_id")
+# df["reading_type"] = data_A_Ra_Re_WD_WS["metadata"]["reading_type"]
+df["reading_unit"] = data_A_Ra_Re_WD_WS["metadata"]["reading_unit"]
+print(df)
