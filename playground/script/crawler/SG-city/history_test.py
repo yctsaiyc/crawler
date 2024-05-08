@@ -388,28 +388,36 @@ data_Po = None
 data_U = None
 
 
+def get_items_df(data_json, sublist_name):
+    item_list = list()
+    for i in data_json["items"]:
+        for sub_dict in i[sublist_name]:
+            sub_dict.update({k: v for k, v in i.items() if k != sublist_name})
+            item_list.append(sub_dict)
+    item_df = pd.json_normalize(item_list)
+    return item_df
+
+
 print("\n2:")
-item_list = list()
-for i in data_2["items"]:
-    for f in i["forecasts"]:
-        f["timestamp"] = i["timestamp"]
-        f["update_timestamp"] = i["update_timestamp"]
-        f["start"] = i["valid_period"]["start"]
-        f["end"] = i["valid_period"]["end"]
-        item_list.append(f)
-item_df = pd.json_normalize(item_list)
+item_df = get_items_df(data_2, "forecasts")
 meta_df = pd.json_normalize(data_2["area_metadata"])
 meta_df.rename(columns={"name": "area"}, inplace=True)
 df = pd.merge(meta_df, item_df, how="right", on="area")
 print(df)
 
+
+print("\n24:")
+items_df = get_items_df(data_24, "periods")
+print(items_df)
+
+
+print("\n4:")
+item_df = get_items_df(data_4, "forecasts")
+print(items_df)
+
+
 print("\nA, Ra, Re, WD, WS:")
-item_list = list()
-for i in data_A_Ra_Re_WD_WS["items"]:
-    for r in i["readings"]:
-        r["timestamp"] = i["timestamp"]
-        item_list.append(r)
-item_df = pd.json_normalize(item_list)
+item_df = get_items_df(data_A_Ra_Re_WD_WS, "readings")
 meta_df = pd.json_normalize(data_A_Ra_Re_WD_WS["metadata"]["stations"])
 meta_df.rename(columns={"id": "station_id"}, inplace=True)
 df = pd.merge(meta_df, item_df, how="right", on="station_id")
