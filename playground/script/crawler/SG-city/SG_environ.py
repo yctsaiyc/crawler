@@ -3,11 +3,11 @@ import os
 import requests
 import json
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 import pytz
 
 
-def SG_environ(config):
+def SG_environ_df(config):
 
     response = requests.get(config["url"])
 
@@ -52,22 +52,69 @@ def SG_environ(config):
 
             df[col_name] = eval(f"data_json{col}")
 
+        return df
+
+    else:
+        print(f"Failed to retrieve data. Status code: {response.status_code}")
+        return None
+
+
+def SG_environ_df_history(config):
+    empty_count = 0
+    today = datetime.now().date()
+    df = pd.DataFrame()
+
+    while empty_count < 3:
+        if today.day == 1:
+            print(today)
+
+        config["url"] += "?date=" + today.strftime("%Y-%m-%d")
+        response = requests.get(config["url"])
+        empty_msg = [
+            '{"message":"Internal Server Error"}',
+            '{"items":[],"api_info":{"status":"healthy"}}',
+            '{"metadata":{"stations":[]},"items":[],"api_info":{"status":"healthy"}}'
+        ]
+
+        if response.text in empty_msg:
+            empty_count += 1
+        else:
+            empty_count = 0
+            df = pd.concat([df, SG_environ_df(config)], ignore_index=True)
+
+        config["url"] = config["url"].split("?")[0]
+        today -= timedelta(days=1)
+
+    return df
+
+
+if __name__ == "__main__":
+    if len(sys.argv) < 2:
+        print("Usage: python3 SG_environ.py <config_file_path> [history]")
+
+    config_file_path = sys.argv[1]
+    with open(config_file_path, "r") as file:
+        config = json.load(file)
+
+    if len(sys.argv) > 2 and sys.argv[2] == "history":
+        df = SG_environ_df_history(config)
         csv_path = os.path.join(
             config["csv_path"],
-            os.path.basename(config["csv_path"])
+            "history_"
+            + os.path.basename(config["csv_path"])
             + "_"
             + datetime.now(pytz.timezone("Asia/Taipei")).strftime("%y%m%d%H%M%S")
             + ".csv",
         )
-
         df.to_csv(csv_path, index=False)
-
     else:
-        print(f"Failed to retrieve data. Sttus code: {response.status_code}")
-
-
-if __name__ == "__main__":
-    config_file_path = sys.argv[1]
-    with open(config_file_path, "r") as file:
-        config = json.load(file)
-    SG_environ(config)
+        df = SG_environ_df(config)
+        if df is not None:
+            csv_path = os.path.join(
+                config["csv_path"],
+                os.path.basename(config["csv_path"])
+                + "_"
+                + datetime.now(pytz.timezone("Asia/Taipei")).strftime("%y%m%d%H%M%S")
+                + ".csv",
+            )
+            df.to_csv(csv_path, index=False)
