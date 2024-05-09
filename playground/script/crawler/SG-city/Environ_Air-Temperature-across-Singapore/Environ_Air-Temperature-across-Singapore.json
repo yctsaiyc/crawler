@@ -1,25 +1,5 @@
 {
     "name": "Air-Temperature-across-Singapore",
     "url": "https://api.data.gov.sg/v1/environment/air-temperature",
-    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/Air-Temperature-across-Singapore",
-    "common_data_path": [
-        "['items'][0]['timestamp']",
-        "['metadata']['reading_unit']"
-    ],
-    "individual_data": {
-        "path_1": "['metadata']['stations']",
-        "fields_1": [
-            "id",
-            "name",
-            "location.latitude",
-            "location.longitude"
-        ],
-        "merge_key_1": "id",
-        "path_2": "['items'][0]['readings']",
-        "fields_2": [
-            "station_id",
-            "value"
-        ],
-        "merge_key_2": "station_id"
-    }
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/Air-Temperature-across-Singapore"
 }

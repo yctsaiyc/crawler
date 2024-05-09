@@ -1,31 +1,5 @@
 {
     "name": "24-hour-weather-forecast",
     "url": "https://api.data.gov.sg/v1/environment/24-hour-weather-forecast",
-    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/24-hour-weather-forecast",
-    "common_data_path": [
-        "['items'][0]['timestamp']",
-        "['items'][0]['general']['forecast']",
-        "['items'][0]['general']['relative_humidity']['low']",
-        "['items'][0]['general']['relative_humidity']['high']",
-        "['items'][0]['general']['temperature']['low']",
-        "['items'][0]['general']['temperature']['high']",
-        "['items'][0]['general']['wind']['speed']['low']",
-        "['items'][0]['general']['wind']['speed']['high']",
-        "['items'][0]['general']['wind']['direction']",
-        "['items'][0]['valid_period']['start']",
-        "['items'][0]['valid_period']['end']"
-    ],
-    "individual_data": {
-        "path_1": "['items'][0]['periods']",
-        "fields_1": [
-            "regions.west",
-            "regions.east",
-            "regions.central",
-            "regions.south",
-            "regions.north",
-            "time.start",
-            "time.end"
-        ],
-        "merge_key_1": ""
-    }
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/24-hour-weather-forecast"
 }
