@@ -67,9 +67,23 @@ def get_SG_environ_df(config):
         elif config["name"] in ["PM25", "Pollutant-Standards-Index"]:
             meta_df = pd.json_normalize(data_json["region_metadata"])
             item_df = get_items_df_2(data_json, "readings")
-            df = pd.merge(
-                meta_df, item_df, how="right", left_on="name", right_on=item_df.index
-            )
+            # Handle history data before 2016-03
+            if meta_df.empty:
+                item_df["name"] = item_df.index
+                missing_cols = [
+                    col for col in config["columns"] if col not in item_df.columns
+                ]
+                for col in missing_cols:
+                    item_df[col] = ""
+                df = item_df.reindex(columns=config["columns"])
+            else:
+                df = pd.merge(
+                    meta_df,
+                    item_df,
+                    how="right",
+                    left_on="name",
+                    right_on=item_df.index,
+                )
 
         elif config["name"] == "Ultra-violet-Index":
             item_list = list()
@@ -91,15 +105,12 @@ def get_SG_environ_df(config):
         return None
 
 
-def get_history_SG_environ_df(config):
+def history_SG_environ(config):
     empty_count = 0
     today = datetime.now().date()
     df = pd.DataFrame()
 
-    while empty_count < 30:
-        if today.day == 1:
-            print(today)
-
+    while empty_count < 200:
         config["url"] += "?date=" + today.strftime("%Y-%m-%d")
         response = requests.get(config["url"])
         empty_msg = [
@@ -116,31 +127,41 @@ def get_history_SG_environ_df(config):
             df = pd.concat([df, get_SG_environ_df(config)], ignore_index=True)
 
         config["url"] = config["url"].split("?")[0]
-        today -= timedelta(days=1)
 
-    return df
+        if today.day == 1 and not df.empty:
+            print(today)
+            csv_file_name = (
+                "history_"
+                + os.path.basename(config["csv_path"])
+                + "_"
+                + str(today.strftime("%y"))
+                + str(today.month).zfill(2)
+                + ".csv"
+            )
+            csv_path = os.path.join(config["csv_path"], csv_file_name)
+            df.to_csv(csv_path, index=False)
+            df = pd.DataFrame()
+
+        today -= timedelta(days=1)
 
 
 if __name__ == "__main__":
     config_file_path = sys.argv[1]
     with open(config_file_path, "r") as file:
         config = json.load(file)
-    csv_file_name = ""
 
     if len(sys.argv) > 2 and sys.argv[2] == "history":
-        df = get_history_SG_environ_df(config)
-        csv_file_name += "history_"
+        history_SG_environ(config)
 
     else:
         df = get_SG_environ_df(config)
 
-    csv_file_name += (
-        os.path.basename(config["csv_path"])
-        + "_"
-        + datetime.now(pytz.timezone("Asia/Taipei")).strftime("%y%m%d%H%M%S")
-        + ".csv"
-    )
-    csv_path = os.path.join(config["csv_path"], csv_file_name)
-
-    if df is not None:
+        csv_file_name = (
+            os.path.basename(config["csv_path"])
+            + "_"
+            + datetime.now(pytz.timezone("Asia/Taipei")).strftime("%y%m%d%H%M%S")
+            + ".csv"
+        )
+        csv_path = os.path.join(config["csv_path"], csv_file_name)
+    
         df.to_csv(csv_path, index=False)

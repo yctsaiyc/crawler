@@ -1,5 +1,24 @@
 {
     "name": "Pollutant-Standards-Index",
     "url": "https://api.data.gov.sg/v1/environment/psi",
-    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/Pollutant-Standards-Index"
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/Pollutant-Standards-Index",
+    "columns": [
+        "name",
+        "label_location.latitude",
+        "label_location.longitude",
+        "o3_sub_index",
+        "pm10_twenty_four_hourly",
+        "pm10_sub_index",
+        "co_sub_index",
+        "pm25_twenty_four_hourly",
+        "so2_sub_index",
+        "co_eight_hour_max",
+        "no2_one_hour_max",
+        "so2_twenty_four_hourly",
+        "pm25_sub_index",
+        "psi_twenty_four_hourly",
+        "o3_eight_hour_max",
+        "timestamp",
+        "update_timestamp"
+    ]
 }

@@ -1,5 +1,13 @@
 {
     "name": "PM25",
     "url": "https://api.data.gov.sg/v1/environment/pm25",
-    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/PM25"
+    "csv_path": "~/opt/airflow/playground/data/SG-city-environment/PM25",
+    "columns": [
+        "name",
+        "label_location.latitude",
+        "label_location.longitude",
+        "pm25_one_hourly",
+        "timestamp",
+        "update_timestamp"
+    ]
 }
