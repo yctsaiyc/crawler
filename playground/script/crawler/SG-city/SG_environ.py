@@ -19,7 +19,7 @@ def get_items_df(data_json, sublist_name):
     return item_df
 
 
-def get_items_df_2(data_json, sublist_name):
+def get_items_df_P(data_json, sublist_name):
     item_df = pd.DataFrame()
 
     for i in data_json["items"]:
@@ -59,14 +59,21 @@ def get_SG_environ_df(config):
         ]:
             meta_df = pd.json_normalize(data_json["metadata"]["stations"])
             meta_df.rename(columns={"id": "station_id"}, inplace=True)
+
+            # data_json["items"] = [
+            #     item
+            #     for item in data_json["items"]
+            #     if "00:00" in item["timestamp"] or "30:00" in item["timestamp"]
+            # ]
             item_df = get_items_df(data_json, "readings")
-            df = pd.merge(meta_df, item_df, how="right", on="station_id")
-            # df["reading_type"] = data_A_Ra_Re_WD_WS["metadata"]["reading_type"]
-            df["reading_unit"] = data_json["metadata"]["reading_unit"]
+            if not meta_df.empty and not item_df.empty:
+                df = pd.merge(meta_df, item_df, how="right", on="station_id")
+                # df["reading_type"] = data_A_Ra_Re_WD_WS["metadata"]["reading_type"]
+                df["reading_unit"] = data_json["metadata"]["reading_unit"]
 
         elif config["name"] in ["PM25", "Pollutant-Standards-Index"]:
             meta_df = pd.json_normalize(data_json["region_metadata"])
-            item_df = get_items_df_2(data_json, "readings")
+            item_df = get_items_df_P(data_json, "readings")
             # Handle history data before 2016-03
             if meta_df.empty:
                 item_df["name"] = item_df.index
@@ -163,5 +170,5 @@ if __name__ == "__main__":
             + ".csv"
         )
         csv_path = os.path.join(config["csv_path"], csv_file_name)
-    
+
         df.to_csv(csv_path, index=False)
