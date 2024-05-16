@@ -8,37 +8,48 @@ from tqdm import tqdm
 
 STORE_LIST = ["cosmed"]
 
+
 def get_cosmed_df():
     # Send a GET request to the API
     url = "https://www.cosmed.com.tw/api/getStore.aspx?t=store&c=&d=&s="
     response = requests.get(url)
-    
+
     # Parse the JSON response
     data = response.json()
-    
+
     # Initialize lists to store data
     store_names = []
+    cities = []
+    districts = []
     addrs = []
-    
+
     # Extract data from each store entry
     for store in data["data"]:
         store_names.append(store["StoreNM"])
+        cities.append(store["ZipCodeName1"])
+        districts.append(store["ZipCodeName2"])
         addrs.append(store["Address"])
-    
-    df = pd.DataFrame({
-        "Store Name": store_names,
-        "Raw Address": addrs
-    })
+
+    df = pd.DataFrame(
+        {
+            "Store Name": store_names,
+            "Raw Address": addrs,
+            "City": cities,
+            "District": districts,
+        }
+    )
 
     return df
+
 
 def clean_addr(addr):
     addr = addr.split("號")[0]
     addr = addr.split(" ")[0]
     addr = addr.split("、")[0]
-    addr = addr.split(".")[0] 
+    addr = addr.split(".")[0]
     addr += "號"
     return addr
+
 
 if __name__ == "__main__":
     df = pd.DataFrame()
@@ -54,12 +65,12 @@ if __name__ == "__main__":
         progress_bar = tqdm(total=total_iterations, desc="Processing")
 
         for idx, row in df.iterrows():
-            addr = clean_addr(row["Raw Address"])
+            addr = row["City"] + row["District"] + clean_addr(row["Raw Address"])
+            print(addr)
             tgos_dict = get_addr_info(addr)
+            print(tgos_dict)
 
             df.at[idx, "Address"] = tgos_dict["address"]
-            df.at[idx, "County"] = tgos_dict["county"]
-            df.at[idx, "Town"] = tgos_dict["town"]
             df.at[idx, "Longitude"] = tgos_dict["longitude"]
             df.at[idx, "Latitude"] = tgos_dict["latitude"]
             df.at[idx, "Code Base"] = tgos_dict["code_base"]
