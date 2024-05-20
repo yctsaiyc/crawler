@@ -8,7 +8,7 @@ from tqdm import tqdm
 
 
 STORE_LIST = [
-    # "cosmed",
+    "cosmed",
     "watsons",
 ]
 
@@ -40,37 +40,43 @@ def get_store_df(store_name):
         )
 
     elif store_name == "watsons":
-        url = "https://api.watsons.com.tw/api/v2/wtctw/stores/watStores?pageSize=1000&isCceOrCc=false&fields=FULL&lang=zh_TW&curr=TWD"
+        # url = "https://api.watsons.com.tw/api/v2/wtctw/stores/watStores"
 
-        # Headers to mimic a browser request
-        headers = {
-            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.93 Safari/537.36",
-            "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8",
-            "Accept-Language": "zh-TW",
-            "Connection": "keep-alive",
-            "Upgrade-Insecure-Requests": "1",
-            "DNT": "1",  # Do Not Track Request Header
-        }
+        with open("watsons.html", "r", encoding="utf-8") as f:
+            html = f.read()
 
-        response = requests.get(url)
-        print("got response")
-        soup = BeautifulSoup(response.content, 'xml')
-        print("got soup")
-    
+        soup = BeautifulSoup(html, "html.parser")
+
         store_names = []
         cities = []
         districts = []
         addrs = []
 
-        stores = soup.find_all('stores')
+        stores = soup.find_all("stores")
         for store in stores:
-            store_names.append(store.find('displayName').text)
-            cities.append(store.find('town').text)
-            districts.append(store.find('province').text.split("縣")[-1])
-            print(district)
-            addrs.append(store.find('streetName').text)
-    
-    return #df
+            store_names.append(store.find("displayname").text)
+            cities.append(store.find("town").text)
+
+            province = store.find("province").text.split("縣")[-1]
+            if province[-1] == "市":  # xx市 or oo市xx市
+                if len(province.split("市")) == 3:  # oo市xx市
+                    province = province.split("市")[-1] + "市"
+            else:  # oo市xx區
+                province = province.split("市")[-1]
+            districts.append(province)
+
+            addrs.append(store.find("streetname").text)
+
+        df = pd.DataFrame(
+            {
+                "Store Name": store_names,
+                "Raw Address": addrs,
+                "City": cities,
+                "District": districts,
+            }
+        )
+
+    return df
 
 
 def clean_addr(addr):
@@ -96,7 +102,10 @@ if __name__ == "__main__":
         progress_bar = tqdm(total=total_iterations, desc="Processing")
 
         for idx, row in df.iterrows():
-            addr = row["City"] + row["District"] + clean_addr(row["Raw Address"])
+            if store == "cosmed":
+                addr = row["City"] + row["District"] + clean_addr(row["Raw Address"])
+            else:
+                addr = row["Raw Address"]
             print(addr)
             tgos_dict = get_addr_info(addr)
             print(tgos_dict)
