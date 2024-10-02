@@ -1,0 +1,9 @@
+{
+    "data_dir": ".",
+    "src": "https://www.moj.go.jp/isa/policies/statistics/toukei_ichiran_nyukan.html",
+    "csv_url": "https://api.e-stat.go.jp/rest/3.0/app/getSimpleStatsData?lang=J&sectionHeaderFlg=2",
+    "json_url": "http://api.e-stat.go.jp/rest/3.0/app/json/getStatsData?lang=J&statsDataId=0003449064&metaGetFlg=Y&cntGetFlg=N&explanationGetFlg=Y&annotationGetFlg=Y&sectionHeaderFlg=1&replaceSpChars=0",
+    "appId": "38f2521aba0fccd9414e01197e9fc334fe218ab0",
+    "statsDataId": "0003449064",
+    "statsDataId_201301-201801": "0003287583"
+}
